@@ -23,7 +23,7 @@ fn init_languages() -> HashMap<String, i32> {
 fn calculate_weights(years_active: &mut HashMap<String, i32>) -> HashMap<String, i32> {
     // Subtract the creation year from 2024 to get the number of years active.
     for year in years_active.values_mut() {
-        *year = 2024 - *year;
+        *year = 2025 - *year;
     }
 
     let min_year = *years_active.values().min().unwrap_or(&0);
