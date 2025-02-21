@@ -6,7 +6,7 @@ Finally, it prints out the final fruit salad.
 
 This example shows how to use a LinkedList, but remember that LinkedList
 has a higher memory overhead and worse cache locality than Vec or VecDeque,
-so it's typically not the best choice unless you have a specific need for the properties 
+so it's typically not the best choice unless you have a specific need for the properties
 of a linked list. In Rust, it's usually better to use a Vec or VecDeque.
 
 A LinkedList is a doubly-linked list, which means that each element in the list
@@ -19,6 +19,18 @@ use rand::seq::SliceRandom; // rand is a random number generation library in Rus
 use rand::thread_rng;
 use std::collections::LinkedList;
 
+/* Challenge functions */
+use std::fs::read;
+use std::io::{BufRead, BufReader};
+/// 
+pub fn read_stdin() -> String {
+    let stdin = std::io::stdin();
+    let mut reader = BufReader::new(stdin.lock());
+    let mut line = String::new();
+    reader.read_line(&mut line).expect("Failed to read input line");
+    line.trim().to_string()
+}
+/* End of Challenge functions */
 fn main() {
     let mut fruit: LinkedList<&str> = LinkedList::new();
     fruit.push_back("Arbutus");
@@ -36,6 +48,15 @@ fn main() {
     let mut rng = thread_rng();
     let mut fruit: Vec<_> = fruit.into_iter().collect();
     fruit.shuffle(&mut rng);
+    // Add fruits at n = 3 positon
+    let position = 3;
+    println!("Add fruits separated by a whitespace: ");
+    let stdin = read_stdin();
+    let input_fruits: Vec<&str> = stdin.split_whitespace().into_iter().collect();
+    for &i in  input_fruits.iter().rev() {
+        //FIXME: Uncovered panic!
+        fruit.insert(position, i); 
+    }
 
     // Convert it back to LinkedList
     let mut fruit: LinkedList<_> = fruit.into_iter().collect();
