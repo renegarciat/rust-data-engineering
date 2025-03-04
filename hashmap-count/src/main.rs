@@ -52,7 +52,7 @@ fn _read_stdin() -> String {
 
 fn sort_by_frequency(list: &Vec<(String, u32)>) -> Vec<(String, u32)> {
     let mut sorted_list: Vec<(String, u32)> = list.clone();
-    sorted_list.sort_by(|a, b|b.1.cmp(&a.1));
+    sorted_list.sort_by(|a, b| b.1.cmp(&a.1));
     sorted_list
 }
 fn main() {

@@ -1,4 +1,5 @@
 use std::collections::HashMap;
+use std::io::{BufRead, BufReader};
 
 fn init_languages() -> HashMap<String, i32> {
     let mut languages = HashMap::new();
@@ -40,10 +41,40 @@ fn calculate_weights(years_active: &mut HashMap<String, i32>) -> HashMap<String,
     weights
 }
 
+fn get_languages() -> HashMap<String, i32> {
+    let mut languages: HashMap<String, i32> = HashMap::new();
+    let text = _read_stdin();
+    let words: Vec<&str> = text.split_whitespace().collect();
+    for word in &words {
+        let parts: Vec<&str> = word.split(',').collect();
+        languages.insert(parts[0].to_string(), parts[1].parse().unwrap());
+    }
+    languages
+}
+
+fn _read_stdin() -> String {
+    let stdin = std::io::stdin();
+    let mut reader = BufReader::new(stdin.lock());
+    let mut line = String::new();
+    reader
+        .read_line(&mut line)
+        .expect("Failed to read input line");
+    let line = line.trim().to_string();
+    line
+}
+
 fn main() {
     let mut languages = init_languages();
     let weights = calculate_weights(&mut languages);
 
+    println!("Language weighing from 1-100 by age (1 is newest and 100 is oldest):");
+    for (language, weight) in &weights {
+        println!("{}: {}", language, weight);
+    }
+    println!("Include new languages\n Type new languages and their year of birth, separated by spaces. Eg.\n
+            Ruby,1993");
+    let mut input_languages: HashMap<String, i32> = get_languages();
+    let weights = calculate_weights(&mut input_languages);
     println!("Language weighing from 1-100 by age (1 is newest and 100 is oldest):");
     for (language, weight) in &weights {
         println!("{}: {}", language, weight);
