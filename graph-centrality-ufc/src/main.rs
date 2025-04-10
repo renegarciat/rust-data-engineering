@@ -1,5 +1,6 @@
 use petgraph::graph::{NodeIndex, UnGraph};
 use petgraph::Direction;
+use std::collections::{HashMap, VecDeque};
 use std::fmt;
 
 #[derive(Debug)]
@@ -30,7 +31,42 @@ impl fmt::Display for Fighter {
 fn add_edge(graph: &mut UnGraph<&Fighter, f32>, nodes: &[NodeIndex], a: usize, b: usize) {
     graph.add_edge(nodes[a], nodes[b], 1.0);
 }
+/**
+    Betweenness centrality is a way of detecting the amount of influence a node has over
+    the flow of information in a graph. It is often used to find nodes that serve as a bridge
+    from one part of a graph to another. The algorithm calculates shortest paths between
+    all pairs of nodes in a graph. Each node receives a score, based on the number of
+    shortest paths that pass through the node. Nodes that more frequently lie on shortest
+    paths between other nodes will have higher betweenness centrality scores.
+    Implementation using Brande's algorithm.
+    */
+fn betweenness_centrality(graph: &UnGraph<&Fighter, f32>) -> HashMap<NodeIndex, f32> {
+    let mut centrality = HashMap::new();
+    for node in graph.node_indices() {
+        centrality.insert(node, 0.0);
+    }
+    let mut stack = Vec::new();
+    let mut pred: HashMap<NodeIndex, Vec<NodeIndex>> = HashMap::new();
+    let mut sigma: HashMap<NodeIndex, usize> = HashMap::new(); //No. of shortest paths
+    let mut dist: HashMap<NodeIndex, isize> = HashMap::new(); //Distance from source
+    // For each source node, compute shortest paths and number of paths to each node.
+    for v in graph.node_indices() {
+        pred.insert(v, Vec::new());
+        sigma.insert(v, 0);
+        dist.insert(v, -1);
+    }
+    // sigma.insert(s, 1);
+    // dist.insert(s, 0);
 
+    let mut queue = VecDeque::new();
+    // queue.push_back(s);
+
+    // BFS to find shortest paths from s
+    while let Some(v) = queue.pop_front() {
+        stack.push(v);
+    }
+    centrality
+}
 fn main() {
     let mut graph = UnGraph::new_undirected();
 
@@ -59,7 +95,10 @@ fn main() {
         let name = &fighters[i].name;
         let degree = graph.edges_directed(node, Direction::Outgoing).count() as f32;
         let closeness = 1.0 / degree;
+        let betweenness = betweenness_centrality(&graph); 
         println!("The closeness centrality of {} is {:.2}", name, closeness);
+        // Challenge 1: Pritn the betweenness centrality of each fighter
+        println!("The betweenness centrality of {} is {:.2}", name,betweenness);
 
         // Explanation
         match name.as_str() {
